@@ -1,0 +1,63 @@
+import streamlit as st
+from datetime import datetime
+
+# Simulação da função de IA (no mundo real, aqui entraria a OpenAI/Google Vision)
+def extrair_dados_da_ia(arquivo):
+    # Simulando que a IA leu isso da imagem
+    return {
+        "numero": "001234",
+        "data": datetime(2025, 12, 10),
+        "valor": 150.00,
+        "estabelecimento": "Restaurante Exemplo"
+    }
+
+st.title("🧾 Reembolso: Upload e Conferência")
+
+# 1. Upload do Arquivo
+arquivo = st.file_uploader("Envie a foto ou PDF da nota", type=["jpg", "png", "pdf"])
+
+if arquivo:
+    # Mostra a imagem para o usuário conferir
+    st.image(arquivo, caption="Comprovante enviado", width=300)
+    
+    # Botão para processar (só roda a IA se o usuário pedir ou automaticamente)
+    if st.button("Ler Nota Fiscal Automaticamente"):
+        with st.spinner("A IA está lendo a nota..."):
+            dados_ia = extrair_dados_da_ia(arquivo)
+            # Salva no estado para não perder quando a tela recarregar
+            st.session_state['dados_extraidos'] = dados_ia
+            st.success("Leitura concluída! Por favor, confira os dados abaixo.")
+
+    # 2. Formulário de Edição (Aparece se já tivermos dados extraídos)
+    if 'dados_extraidos' in st.session_state:
+        dados = st.session_state['dados_extraidos']
+        
+        st.divider()
+        st.subheader("📝 Conferência dos Dados")
+        
+        with st.form("form_conferencia"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                # O usuário pode alterar o que a IA sugeriu
+                novo_numero = st.text_input("Nº da Nota", value=dados['numero'])
+                nova_data = st.date_input("Data Emissão", value=dados['data'])
+                
+            with col2:
+                # Se a IA leu 150.00 mas era 1500.00, o usuário arruma aqui
+                novo_valor = st.number_input("Valor Total (R$)", value=dados['valor'], format="%.2f")
+                centro_custo = st.selectbox("Centro de Custo", ["Alimentação", "Transporte", "Hospedagem"])
+            
+            novo_estabelecimento = st.text_input("Estabelecimento", value=dados['estabelecimento'])
+            
+            # Botão final de salvar
+            submit = st.form_submit_button("✅ Confirmar e Salvar no Banco de Dados")
+            
+            if submit:
+                # Aqui entra o código SQL para salvar no banco
+                # salvar_no_banco(novo_numero, nova_data, novo_valor, centro_custo...)
+                st.balloons()
+                st.success(f"Reembolso de R$ {novo_valor} salvo em '{centro_custo}' com sucesso!")
+                
+                # Limpa o estado para o próximo
+                del st.session_state['dados_extraidos']

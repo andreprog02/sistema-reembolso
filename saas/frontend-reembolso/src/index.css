@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- ESTILOS GLOBAIS --- */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  /* Garante que o fundo seja sempre escuro */
+  color-scheme: dark; 
+}
+
+body {
+  margin: 0;
+  /* Aplica a cor de fundo definida no tailwind.config.js e suaviza a fonte */
+  @apply bg-dark-900 text-slate-200 antialiased;
+  overflow-x: hidden; /* Evita rolagem lateral indesejada */
+}
+
+/* --- SCROLLBAR CUSTOMIZADA (Modo Escuro) --- */
+/* Isso deixa a barra de rolagem cinza escura para combinar com o app */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-900; 
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-dark-700 rounded-full;
+  border: 2px solid theme('colors.dark.900'); /* Cria um respiro visual */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-brand-600; /* Fica laranja ao passar o mouse */
+}
+
+/* --- ANIMAÇÕES --- */
+/* Usamos isso para fazer os elementos aparecerem suavemente */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* Começa levemente abaixo */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- AJUSTES DE FORMULÁRIO --- */
+/* Remove estilos padrão feios de inputs number/date */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Deixa o ícone do calendário branco */
+  cursor: pointer;
+}
